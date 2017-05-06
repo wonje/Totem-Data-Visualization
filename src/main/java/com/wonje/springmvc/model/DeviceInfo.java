@@ -1,6 +1,9 @@
 package com.wonje.springmvc.model;
 
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Created by wonje on 5/1/17.
  */
@@ -22,6 +25,19 @@ public class DeviceInfo {
         this.date = date;
         this.amp = amp;
         this.volt = volt;
+    }
+
+    public DeviceInfo(String rowToParse){
+        List<String> columns = Arrays.asList(rowToParse.split(","));
+        if (columns.size() < 2) {
+            throw new IllegalArgumentException("Parsing error");
+        }
+
+        this.totemDevice = columns.get(0);
+        this.date = columns.get(2);
+        this.timeStamp = Long.valueOf(columns.get(3)).longValue();
+        this.amp = Double.valueOf(columns.get(4)).doubleValue();
+        this.volt = Double.valueOf(columns.get(5)).doubleValue();
     }
 
     public String getTotemDevice() {

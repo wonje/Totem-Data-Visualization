@@ -1,17 +1,14 @@
 package com.wonje.springmvc.controller;
 
-import com.datastax.driver.core.ResultSet;
 import com.wonje.springmvc.model.DeviceInfo;
 import com.wonje.springmvc.service.DeviceInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -22,8 +19,6 @@ import java.util.concurrent.atomic.AtomicLong;
 //@RestController
 public class TotemController {
     // SERVICE FOR RETRIEVAL / MANIPULATION WORK OF ALL DATA
-    @Autowired
-    DeviceInfoService deviceInfoService;
     @Autowired
     DeviceInfoService cassandraService;
 
@@ -45,7 +40,7 @@ public class TotemController {
         return "hello";
     }
 
-    // RETRIEVE ALL DEVICE INFOS [METHOD == GET] FOR RESTful Method
+    // TODO Retrieve all device info using GET method for RESTful method
     @RequestMapping(value = "/deviceInfo", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<List<DeviceInfo>> listAllDeviceInfos() {
@@ -59,12 +54,24 @@ public class TotemController {
         return new ResponseEntity<List<DeviceInfo>>(deviceInfos, HttpStatus.OK);
     }
 
+    // TODO Upload each row of device info using POST method for RESTful method
+    @RequestMapping(value = "/deviceInfo", method = RequestMethod.POST)
+//    @ResponseBody
+    public ResponseEntity<Void> createDeviceInfo(@RequestBody String line) {
+        // TODO Create DB
+        cassandraService.saveDeviceInfo(new DeviceInfo(line.split("\"")[1]));
+
+        HttpHeaders headers = new HttpHeaders();
+//        headers.setLocation(ucBuilder.path("/deviceInfo/{id}").buildAndExpand(deviceInfo.getId()).toUri());
+        return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
+    }
+
 
     // DELETE ALL DEVICE INFOS ##############################################################
     @RequestMapping(value = "/deviceInfo", method = RequestMethod.DELETE)
     @ResponseBody
     public ResponseEntity<DeviceInfo> deleteAllDeviceInfos() {
-        deviceInfoService.deleteAllDeviceInfos();
+//        deviceInfoService.deleteAllDeviceInfos();
         return new ResponseEntity<DeviceInfo>(HttpStatus.NO_CONTENT);
     }
 }

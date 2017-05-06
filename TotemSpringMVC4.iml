@@ -26,6 +26,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test/resources" type="java-test-resource" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />
@@ -54,7 +55,6 @@
     <orderEntry type="library" name="Maven: io.netty:netty-codec:4.0.44.Final" level="project" />
     <orderEntry type="library" name="Maven: com.google.guava:guava:19.0" level="project" />
     <orderEntry type="library" name="Maven: io.dropwizard.metrics:metrics-core:3.1.2" level="project" />
-    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.7" level="project" />
     <orderEntry type="library" name="Maven: com.github.jnr:jnr-ffi:2.0.7" level="project" />
     <orderEntry type="library" name="Maven: com.github.jnr:jffi:1.2.10" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: com.github.jnr:jffi:native:1.2.10" level="project" />
@@ -68,5 +68,12 @@
     <orderEntry type="library" name="Maven: com.github.jnr:jnr-constants:0.9.0" level="project" />
     <orderEntry type="library" name="Maven: com.datastax.cassandra:cassandra-driver-mapping:3.2.0" level="project" />
     <orderEntry type="library" name="Maven: com.datastax.cassandra:cassandra-driver-extras:3.2.0" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.21" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:slf4j-log4j12:1.7.21" level="project" />
+    <orderEntry type="library" name="Maven: log4j:log4j:1.2.17" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.data:spring-data-cassandra:1.5.3.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.data:spring-cql:1.5.3.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.data:spring-data-commons:1.13.3.RELEASE" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: org.slf4j:jcl-over-slf4j:1.7.24" level="project" />
   </component>
 </module>
