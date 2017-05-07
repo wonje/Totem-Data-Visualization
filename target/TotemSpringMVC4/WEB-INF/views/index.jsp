@@ -15,42 +15,50 @@
       <script src="http://code.jquery.com/jquery-latest.js"> </script>
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 
+      <!-- Include Required Prerequisites -->
+      <script type="text/javascript" src="//cdn.jsdelivr.net/jquery/1/jquery.min.js"></script>
+      <script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+      <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap/3/css/bootstrap.css" />
+
+      <!-- Include Date Range Picker -->
+      <script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
+      <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
+
+      <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+      <style>
+          body,h1 {font-family: "Raleway", sans-serif}
+          body, html {height: 100%}
+          .bgimg {
+              background-image: url('https://www.w3schools.com/w3images/forestbridge.jpg');
+              min-height: 100%;
+              background-position: center;
+              background-size: cover;
+          }
+      </style>
+
       <script type="text/javascript">
-          var devicesName = {};
-          var nameCount = 0;
-            $(document).ready(function () {
+            var ajaxCall = function (startTime, endTime) {
                 $.ajax({
                     url: "/deviceInfo",
-                    method: "GET"
+                    method: "GET",
+                    data: {startTime: startTime, endTime: endTime}
                 }).done(function( data ) {
-//                    $("#devices").text(JSON.stringify(data));
-//                    var newData = [];
-//                    var DataSet = {};
                     var dataSet = {};
                     for(var i in data) {
                         var obj = data[i];
-                        // TODO Check the device name is already exists or not
+                        // TODO Check the device name already exists or not
                         if(!dataSet.hasOwnProperty(obj.totemDevice)){
-//                            devicesName[obj.totemDevice] = nameCount++;
                             dataSet[obj.totemDevice] = {name: obj.totemDevice, data: []};
                         }
 
                         dataSet[obj.totemDevice].data.push([obj.timeStamp, obj.volt * obj.amp]);
-
-//                        newData.push([obj.timeStamp, obj.volt * obj.amp])
 
                     }
                     var charSeries = [];
                     for (var key in dataSet) {
                         charSeries.push(dataSet[key]);
                     }
-
-//                    devicesName.forEach(function(name){
-//
-////                    });
-//                    for (var key in dataSet) {
-//                        chartObj.series[devicesName[dataSet[key][0].totemDevice]].setData(dataSet[key], true);
-//                    }
 
                     // Delete all existing data
                     var seriesLength = chartObj.series.length;
@@ -63,32 +71,89 @@
                         chartObj.addSeries(charSeries[i]);
                     }
 
-//                    dataSet.forEach(function(data){
-//                        chartObj.series[data[0].totemDevice].setData(data, true);
-//                    });
-
-
-//                    chartObj.series[0].setData(newData, true);
-
                 }).fail(function() {
                     alert( "Ajaxing device data failed!" );
                     $("#devices").text(":(");
                 }).always(function() {
                     //alert( "complete" );
                 });
-            });
+            };
+            $(document).ready(ajaxCall(0,new Date().getTime()));
       </script>
     <title>Display Current Data</title>
   </head>
   <body>
-    <h1>Totem Internship Assignment</h1><br>
-    <h2>Display All data set</h2><br>
-  <p id="device">
-      <h2 id="devices"></h2>
-    <h2 id="test"></h2>
+  <div class="bgimg w3-display-container w3-animate-opacity w3-text-white">
+      <div class="w3-display-topleft w3-padding-large w3-xlarge">
+          <img src="//static1.squarespace.com/static/56104a4ee4b0ffa1f98ffcfc/t/5612fc32e4b0d85879e4f1ad/1492952904688/?format=1500w" height="60" width="200">
+      </div>
+      <div class="w3-display-containers">
+          <%--<div class="w3-display-middle">--%>
+          <h1 class="w3-jumbo w3-animate-top w3-center">Totem Internship Assignment</h1>
+          <hr class="w3-border-grey" style="margin:auto;width:70%">
 
-    <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+              <p class="w3-xxlarge w3-center">Choose Date within 7days</p>
+          <%--<input class="w3-large w3-center" type="text" name="daterange" value="" />--%>
+          <div class="w3-large w3-center">
+          <input type="text" name="daterange" style="width : 300px; text-decoration-color: black;" value="" />
+          </div>
+          <P></P>
+          <hr class="w3-border-grey" style="margin:auto;width:70%">
+
+              <p class="w3-xxlarge w3-center">Plot All Data Set</p>
+          <br><br>
+          <h2 class="w3-large w3-center" id="devices"></h2>
+          <%--<div class="w3-large w3-center" id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>--%>
+          <%--<div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>--%>
+      <%--</div>--%>
+      <%--<div class="w3-large w3-center" id="container" style="min-width: 310px; max-width : height: 600px; margin: 0 auto"></div>--%>
+      <div class="w3-large w3-center" id="container" style="height: 600px; margin: 0 auto"></div>
+      <%--<div class="w3-large w3-center" id="container" style="max-width: 1000px; height: 600px; margin: 0 auto"></div>--%>
+  </div>
+      <div class="w3-display-bottomleft w3-padding-large">
+          <b>Wonje Kang</b>
+      </div>
+  </div>
+
+
+
+
+    <%--<h1>Totem Internship Assignment</h1><br>--%>
+    <%--<h2>Choose Date</h2>--%>
+    <%--<div id="daterange"></div><br>--%>
+    <%--<input type="text" name="daterange" value="" />--%>
+    <%--<h2>Display All data set</h2><br>--%>
+  <%--<p id="device">--%>
+      <%--<h2 id="devices"></h2>--%>
+    <%--<h2 id="test"></h2>--%>
+
+    <%--<div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>--%>
     <script>
+            var startDate;
+            var endDate;
+
+            $(function() {
+                $('input[name="daterange"]').daterangepicker({
+                    "autoApply": true,
+                    "dateLimit": {
+                        "days": 7
+                    },
+                    "showCustomRangeLabel": false,
+                    "startDate": "05/07/2017",
+                    "endDate": "05/13/2017"
+                });
+                $('input[name="daterange"]').on('apply.daterangepicker', function(ev, picker) {
+                    startDate = picker.startDate;
+                    endDate = picker.endDate;
+                    alert("From " + new Date(startDate) + " to " + new Date(endDate));
+                    ajaxCall(new Date(startDate).getTime(), new Date(endDate).getTime());
+                });
+
+            });
+
+
+
+
         var chartdata = [[0,0]];
 
         var chartObj = Highcharts.chart('container', {
@@ -99,10 +164,10 @@
                 zoomType: 'x'
             },
             title: {
-                text: 'Fruit consumption *'
+                text: 'Totem Power'
             },
             subtitle: {
-                text: '* Jane\'s banana consumption is unknown',
+                text: 'Time',
                 floating: true,
                 align: 'right',
                 verticalAlign: 'bottom',

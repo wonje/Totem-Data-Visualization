@@ -1,14 +1,18 @@
 package com.wonje.springmvc.configuration;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
+
+import javax.sql.DataSource;
 
 /**
  * Created by wonje on 5/1/17.
@@ -16,7 +20,11 @@ import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 @Configuration
 @EnableWebMvc
 @ComponentScan(basePackages = "com.wonje.springmvc")
+@PropertySource(value = {"classpath:postgresql.properties"})
 public class TotemConfiguration extends WebMvcConfigurerAdapter {
+    @Autowired
+    private Environment env;
+
     @Override
     public void configureViewResolvers(ViewResolverRegistry registry) {
         InternalResourceViewResolver ivr = new InternalResourceViewResolver();
@@ -37,4 +45,24 @@ public class TotemConfiguration extends WebMvcConfigurerAdapter {
     public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
         configurer.enable();
     }
+
+    @Bean
+    public DataSource getPostgreSQLDataSource() {
+        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        dataSource.setDriverClassName(env.getRequiredProperty("jdbc.driverClassName"));
+        // FIXME Is it right code?
+        dataSource.setUrl(env.getRequiredProperty("jdbc.url"));
+        dataSource.setUsername(env.getRequiredProperty("jdbc.username"));
+        dataSource.setPassword(env.getRequiredProperty("jdbc.password"));
+
+        return dataSource;
+    }
+
+    @Bean
+    public JdbcTemplate jdbcTemplate() {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(getPostgreSQLDataSource());
+        jdbcTemplate.setResultsMapCaseInsensitive(true);
+        return jdbcTemplate;
+    }
+
 }

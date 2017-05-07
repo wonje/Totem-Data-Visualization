@@ -13,12 +13,6 @@ public interface DeviceInfoService {
 
     void saveDeviceInfo(DeviceInfo deviceInfo);
 
-    ResultSet getAllDB();
-
-    List<DeviceInfo> findAllDeviceInfos();
-
-    void deleteAllDeviceInfos();
-
-    public boolean isDeviceInfoExist(DeviceInfo deviceInfo);
+    List<DeviceInfo> findAllDeviceInfos(long startTime, long endTime);
 
 }

@@ -73,14 +73,9 @@ public class CassandraServiceImpl implements DeviceInfoService {
     }
 
     @Override
-    public ResultSet getAllDB() {
-        ResultSet rs = session.execute("SELECT * FROM totem.deviceInfo;");
-        return rs;
-    }
-
-    @Override
-    public List<DeviceInfo> findAllDeviceInfos() {
-        ResultSet rs = session.execute("SELECT * FROM totem.deviceInfo;");
+    public List<DeviceInfo> findAllDeviceInfos(long startTime, long endTime) {
+        ResultSet rs = session.execute("SELECT * FROM totem.deviceInfo WHERE timestamp >= " + startTime
+                + " AND timestamp <= "+ endTime +" ALLOW FILTERING;");
         List<DeviceInfo> deviceInfos = new ArrayList<DeviceInfo>();
         for(Row row : rs){
             // TODO TRY TIME STRING TYPE TO STRING OR DATE REFERENCE TYPE OBJECT
@@ -89,20 +84,7 @@ public class CassandraServiceImpl implements DeviceInfoService {
             System.out.println(deviceInfos.get(0));
         }
 
-        // if only one row, then rs.one() == row
-
-
         return deviceInfos;
     }
 
-    @Override
-    public void deleteAllDeviceInfos() {
-        // RESET DATABASE
-        session.execute("DROP KEYSPACE totem;");
-    }
-
-    @Override
-    public boolean isDeviceInfoExist(DeviceInfo deviceInfo) {
-        return false;
-    }
 }

@@ -16,13 +16,10 @@ import java.util.concurrent.atomic.AtomicLong;
 @Transactional
 public class DeviceInfoServiceImpl implements DeviceInfoService {
 
-
-    public static final AtomicLong counter = new AtomicLong();
-
-    private static List<DeviceInfo> deviceInfos;
+    private List<DeviceInfo> deviceInfos;
 
     @Override
-    public List<DeviceInfo> findAllDeviceInfos() {
+    public List<DeviceInfo> findAllDeviceInfos(long startTime, long endTime) {
         return deviceInfos;
     }
 
@@ -39,22 +36,13 @@ public class DeviceInfoServiceImpl implements DeviceInfoService {
 
     @Override
     public void saveDeviceInfo(DeviceInfo deviceInfo) {
-//        deviceInfo.setId(counter.incrementAndGet());
         deviceInfos.add(deviceInfo);
     }
 
-    @Override
-    public ResultSet getAllDB() {
-        return null;
-    }
-
-    @Override
     public void deleteAllDeviceInfos() {
         deviceInfos.clear();
-        counter.set(0);
     }
 
-    @Override
     public boolean isDeviceInfoExist(DeviceInfo deviceInfo) {
         return findByTotemDeviceAndTimeStamp(deviceInfo) != null;
     }
