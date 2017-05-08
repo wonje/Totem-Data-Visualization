@@ -7,10 +7,10 @@ import com.wonje.springmvc.model.DeviceInfo;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.text.SimpleDateFormat;
 
 /**
  * Created by wonje on 5/2/17.

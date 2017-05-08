@@ -1,6 +1,5 @@
 package com.wonje.springmvc.service;
 
-import com.datastax.driver.core.ResultSet;
 import com.wonje.springmvc.model.DeviceInfo;
 
 import java.util.List;

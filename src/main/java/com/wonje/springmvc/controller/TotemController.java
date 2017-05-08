@@ -3,7 +3,6 @@ package com.wonje.springmvc.controller;
 import com.wonje.springmvc.model.DeviceInfo;
 import com.wonje.springmvc.model.SchedulingState;
 import com.wonje.springmvc.service.CassandraServiceImpl;
-import com.wonje.springmvc.service.DeviceInfoService;
 import com.wonje.springmvc.service.DeviceInfoServiceImpl;
 import com.wonje.springmvc.service.PostgreServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,13 +10,11 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by wonje on 5/1/17.
@@ -67,15 +64,11 @@ public class TotemController {
     }
 
     // ########## Cassandra Service ##########
-
-    // Retrieve all device info using GET method for RESTful method
     @RequestMapping(value = "/deviceInfo", method = RequestMethod.GET, params = {"startTime", "endTime"})
     @ResponseBody
     public ResponseEntity<List<DeviceInfo>> listAllDeviceInfos(@RequestParam(value = "startTime") long startTime,
                                                                @RequestParam(value = "endTime") long endTime){
         List<DeviceInfo> deviceInfos = cassandraService.findAllDeviceInfos(startTime, endTime);
-//        List<DeviceInfo> deviceInfos = postgreServiceImpl.findAllDeviceInfos(startTime, endTime);
-
         if(deviceInfos.isEmpty()){
             System.out.println("Any deviceInfo is not found");
             return new ResponseEntity<List<DeviceInfo>>(HttpStatus.NO_CONTENT);
@@ -91,8 +84,6 @@ public class TotemController {
     public ResponseEntity<Void> createDeviceInfo(@RequestBody String line) {
         // Create DB
         cassandraService.saveDeviceInfo(new DeviceInfo(line.split("\"")[1]));
-//        postgreServiceImpl.saveDeviceInfo(new DeviceInfo(line.split("\"")[1]));
-
         HttpHeaders headers = new HttpHeaders();
         return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
     }
@@ -101,25 +92,6 @@ public class TotemController {
 
 
     // ##########PostgreSQL Service##########
-
-//    // INSERT INTO totem.deviceInfo
-//    @RequestMapping(value = "/postgre", method = RequestMethod.POST, params = {"startTime", "endTime"})
-//    public String postEveryFiveMinutes(@RequestParam(value = "startTime") long startTime,
-//                                       @RequestParam(value = "endTime") long endTime){
-//        // TODO INSERT DB collected last 5 minutes
-////        postgreServiceImpl.saveAverageInfo(deviceInfoService.findAllDeviceInfos(startTime, endTime));
-//
-//        // CHOICE 1 : INPUT FROM CASSANDRA
-////        postgreServiceImpl.saveAverageInfo(cassandraService.findAllDeviceInfos(startTime, endTime));
-//
-//        // TODO CHOICE 2 : INPUT DB DIRECTLY ON THE INDEX.JSP
-//
-//
-//
-//        return "index";
-//    }
-
-
     // SELECT * FROM totem.deviceInfo
     @RequestMapping(value = "/postgre", method = RequestMethod.GET)
     public ResponseEntity<List<DeviceInfo>> returnEveryFiveMinutes(){

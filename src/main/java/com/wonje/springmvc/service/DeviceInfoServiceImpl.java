@@ -1,13 +1,10 @@
 package com.wonje.springmvc.service;
 
-import com.datastax.driver.core.ResultSet;
 import com.wonje.springmvc.model.DeviceInfo;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Created by wonje on 5/1/17.
