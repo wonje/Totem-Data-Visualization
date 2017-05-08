@@ -50,7 +50,7 @@ CREATE TABLE deviceInfo (
 3. Data Set
 - Put the data set file "grid_stats.csv" into the adequate path.
 - The path is "\TotemSpringMVC4\src\test\resources"
-
+- You must put the data set before running this project. I did not upload this.
 
 ## Step 2 : Run TotemSpringMVC4.
 
