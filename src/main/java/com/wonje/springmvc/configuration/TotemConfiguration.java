@@ -8,6 +8,8 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
@@ -19,6 +21,7 @@ import javax.sql.DataSource;
  */
 @Configuration
 @EnableWebMvc
+@EnableScheduling
 @ComponentScan(basePackages = "com.wonje.springmvc")
 @PropertySource(value = {"classpath:postgresql.properties"})
 public class TotemConfiguration extends WebMvcConfigurerAdapter {
@@ -34,6 +37,13 @@ public class TotemConfiguration extends WebMvcConfigurerAdapter {
         registry.viewResolver(ivr);
         registry.enableContentNegotiation(new MappingJackson2JsonView());
         registry.jsp();
+    }
+
+    @Scheduled(cron = "0 0/5 * * * *")
+    public void scheduleTaskUsingCronExpression() {
+        long now = System.currentTimeMillis() / 1000;
+        System.out.println(
+                "schedule tasks using cron jobs - " + now);
     }
 
     @Override

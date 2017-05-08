@@ -103,8 +103,23 @@ public class CassandraServiceImpl implements DeviceInfoService {
             // TODO TRY TIME STRING TYPE TO STRING OR DATE REFERENCE TYPE OBJECT
             deviceInfos.add(new DeviceInfo(row.getString("totemdevice"), row.getLong("timestamp"),
                     row.getString("date"), row.getDouble("amp"), row.getDouble("volt")));
-            System.out.println(deviceInfos.get(0));
         }
+
+        return deviceInfos;
+    }
+
+    public List<DeviceInfo> findAllTempDeviceInfos(){
+        ResultSet rs = session.execute("SELECT * FROM totem.tempInfo;");
+        // FIXME I SHOULD RE PROGRAMMING FOR THIS PART. IT WOULD MAKE TROUBLE FOR COMPLEXITY.
+        // FIXME I SHOULD USE RESTful WAY FOR EACH OF deviceInfo OBJECT USING POST METHOD.
+        List<DeviceInfo> deviceInfos = new ArrayList<DeviceInfo>();
+        for(Row row : rs){
+            // TODO TRY TIME STRING TYPE TO STRING OR DATE REFERENCE TYPE OBJECT
+            deviceInfos.add(new DeviceInfo(row.getString("totemdevice"), row.getLong("timestamp"),
+                    row.getString("date"), row.getDouble("amp"), row.getDouble("volt")));
+        }
+        // EARASE ALL ROWS
+        session.execute("TRUNCATE totem.tempInfo;");
 
         return deviceInfos;
     }

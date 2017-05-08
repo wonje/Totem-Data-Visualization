@@ -1,6 +1,7 @@
 package com.wonje.springmvc.controller;
 
 import com.wonje.springmvc.model.DeviceInfo;
+import com.wonje.springmvc.model.SchedulingState;
 import com.wonje.springmvc.service.CassandraServiceImpl;
 import com.wonje.springmvc.service.DeviceInfoService;
 import com.wonje.springmvc.service.DeviceInfoServiceImpl;
@@ -14,8 +15,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -23,6 +24,7 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 @Controller
 public class TotemController {
+
     @Autowired
     @Qualifier("deviceInfoService")
     DeviceInfoServiceImpl deviceInfoService;
@@ -40,7 +42,29 @@ public class TotemController {
         return "index";
     }
 
+    // ########## Scheduling Mode ############
+    @RequestMapping(value = "/timeSchedule", params = {"minute"})
+    public String schedulingChange(@RequestParam(value = "minute") int minute) {
+        switch (minute){
+            case 5:
+            {
+                SchedulingState.currentState = SchedulingState.FIVE_MIN;
+                break;
+            }
+            case 15:
+            {
+                SchedulingState.currentState = SchedulingState.FIFTHTEEN_MIN;
+                break;
+            }
+            case 30:
+            {
+                SchedulingState.currentState = SchedulingState.THIRTY_MIN;
+                break;
+            }
+        }
 
+        return "index";
+    }
 
     // ########## Cassandra Service ##########
 
@@ -78,33 +102,33 @@ public class TotemController {
 
     // ##########PostgreSQL Service##########
 
-    // INSERT INTO totem.deviceInfo
-    @RequestMapping(value = "/postgre", method = RequestMethod.POST, params = {"startTime", "endTime"})
-    public String postEveryFiveMinutes(@RequestParam(value = "startTime") long startTime,
-                                       @RequestParam(value = "endTime") long endTime){
-        // TODO INSERT DB collected last 5 minutes
-//        postgreServiceImpl.saveAverageInfo(deviceInfoService.findAllDeviceInfos(startTime, endTime));
-
-        // CHOICE 1 : INPUT FROM CASSANDRA
-//        postgreServiceImpl.saveAverageInfo(cassandraService.findAllDeviceInfos(startTime, endTime));
-
-        // TODO CHOICE 2 : INPUT DB DIRECTLY ON THE INDEX.JSP
-
-
-
-        return "index";
-    }
+//    // INSERT INTO totem.deviceInfo
+//    @RequestMapping(value = "/postgre", method = RequestMethod.POST, params = {"startTime", "endTime"})
+//    public String postEveryFiveMinutes(@RequestParam(value = "startTime") long startTime,
+//                                       @RequestParam(value = "endTime") long endTime){
+//        // TODO INSERT DB collected last 5 minutes
+////        postgreServiceImpl.saveAverageInfo(deviceInfoService.findAllDeviceInfos(startTime, endTime));
+//
+//        // CHOICE 1 : INPUT FROM CASSANDRA
+////        postgreServiceImpl.saveAverageInfo(cassandraService.findAllDeviceInfos(startTime, endTime));
+//
+//        // TODO CHOICE 2 : INPUT DB DIRECTLY ON THE INDEX.JSP
+//
+//
+//
+//        return "index";
+//    }
 
 
     // SELECT * FROM totem.deviceInfo
-    @RequestMapping(value = "/postgre", method = RequestMethod.GET, params = {"startTime", "endTime"})
-    public ResponseEntity<List<DeviceInfo>> returnEveryFiveMinutes(@RequestParam(value = "startTime") long startTime,
-                                       @RequestParam(value = "endTime") long endTime){
-        List<DeviceInfo> deviceInfos = postgreServiceImpl.findAllDeviceInfos(startTime, endTime);
-
-        if(deviceInfos.isEmpty()){
-            System.out.println("Any deviceInfo is not found");
-            return new ResponseEntity<List<DeviceInfo>>(HttpStatus.NO_CONTENT);
+    @RequestMapping(value = "/postgre", method = RequestMethod.GET)
+    public ResponseEntity<List<DeviceInfo>> returnEveryFiveMinutes(){
+        List<DeviceInfo> deviceInfos;
+        try {
+            deviceInfos = postgreServiceImpl.findAllDeviceInfos(0, new Date().getTime());
+        } catch (Exception e) {
+            System.out.println("Any deviceInfo is not found" + e);
+            return new ResponseEntity<List<DeviceInfo>>(HttpStatus.OK);
         }
 
         return new ResponseEntity<List<DeviceInfo>>(deviceInfos, HttpStatus.OK);

@@ -61,14 +61,14 @@
                     }
 
                     // Delete all existing data
-                    var seriesLength = chartObj.series.length;
+                    var seriesLength = chartObjForCassandra.series.length;
                     for(var i = seriesLength -1; i > -1; i--) {
-                        chartObj.series[i].remove();
+                        chartObjForCassandra.series[i].remove();
                     }
 
                     // then replace all data
                     for(var i in charSeries) {
-                        chartObj.addSeries(charSeries[i]);
+                        chartObjForCassandra.addSeries(charSeries[i]);
                     }
 
                 }).fail(function() {
@@ -78,7 +78,52 @@
                     //alert( "complete" );
                 });
             };
-            $(document).ready(ajaxCall(0,new Date().getTime()));
+
+            // FIXME DO SOMETHING
+            var ajaxCall_Postgre = function () {
+                $.ajax({
+                    url: "/postgre",
+                    method: "GET",
+                }).done(function( data ) {
+                    var dataSet = {};
+                    for(var i in data) {
+                        var obj = data[i];
+                        // TODO Check the device name already exists or not
+                        if(!dataSet.hasOwnProperty(obj.totemDevice)){
+                            dataSet[obj.totemDevice] = {name: obj.totemDevice, data: []};
+                        }
+
+                        dataSet[obj.totemDevice].data.push([obj.timeStamp, obj.volt * obj.amp]);
+
+                    }
+                    var charSeries = [];
+                    for (var key in dataSet) {
+                        charSeries.push(dataSet[key]);
+                    }
+
+                    // Delete all existing data
+                    var seriesLength = chartObjForPostgre.series.length;
+                    for(var i = seriesLength -1; i > -1; i--) {
+                        chartObjForPostgre.series[i].remove();
+                    }
+
+                    // then replace all data
+                    for(var i in charSeries) {
+                        chartObjForPostgre.addSeries(charSeries[i]);
+                    }
+
+                }).fail(function() {
+                    alert( "Ajaxing device data failed!" );
+                    $("#devices").text(":(");
+                }).always(function() {
+                    //alert( "complete" );
+                });
+            };
+
+            $(document).ready(function () {
+                    ajaxCall(0,new Date().getTime());
+                    ajaxCall_Postgre();
+            });
 
 
       </script>
@@ -100,9 +145,11 @@
           <hr class="w3-border-grey" style="margin:auto;width:70%">
               <p class="w3-xxlarge w3-center">Plot All Data Set</p>
           <h2 class="w3-large w3-center" id="devices"></h2>
-      <div class="w3-large w3-center" id="container" style="height: 600px; margin: 0 auto"></div>
+      <div class="w3-large w3-center" id="container" style="height: 500px; margin: 0 auto"></div>
+          <div class="w3-large w3-center" id="container_postgre" style="height: 500px; margin: 0 auto"></div>
+
   </div>
-      <div class="w3-display-bottomleft w3-padding-large">
+      <div class="w3-display-bottomleft w3-padding-large w3-large">
           <b>Wonje Kang</b>
       </div>
   </div>
@@ -118,8 +165,8 @@
                         "days": 7
                     },
                     "showCustomRangeLabel": false,
-                    "startDate": "",
-                    "endDate": "05/08/2017"
+                    "startDate": "05/08/2017",
+                    "endDate": "05/09/2017"
                 });
                 $('input[name="daterange"]').on('apply.daterangepicker', function(ev, picker) {
                     startDate = picker.startDate;
@@ -135,7 +182,7 @@
 
         var chartdata = [[0,0]];
 
-        var chartObj = Highcharts.chart('container', {
+        var chartObjForCassandra = Highcharts.chart('container', {
 
             chart: {
                 type: 'area',
@@ -143,7 +190,7 @@
                 zoomType: 'x'
             },
             title: {
-                text: 'Totem Power : Watts over time'
+                text: 'Totem Power : Watts over time (Cassandra)'
             },
             subtitle: {
                 text: 'Time',
@@ -192,6 +239,64 @@
                 }
             ]
         });
+
+            var chartObjForPostgre = Highcharts.chart('container_postgre', {
+
+                chart: {
+                    type: 'area',
+                    spacingBottom: 30,
+                    zoomType: 'x'
+                },
+                title: {
+                    text: 'Totem Power : Average Watts over time (PostgreSQL)'
+                },
+                subtitle: {
+                    text: 'Time',
+                    floating: true,
+                    align: 'right',
+                    verticalAlign: 'bottom',
+                    y: 15
+                },
+                legend: {
+                    layout: 'vertical',
+                    align: 'left',
+                    verticalAlign: 'top',
+                    x: 150,
+                    y: 100,
+                    floating: true,
+                    borderWidth: 1,
+                    backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
+                },
+                xAxis: {
+                    type: 'datetime'
+                },
+                yAxis: {
+                    title: {
+                        text: 'Watts'
+                    },
+//
+                },
+                tooltip: {
+                    formatter: function () {
+                        return '<b>' + this.series.name + '</b><br/>' +
+                            this.x + ': ' + this.y;
+                    }
+                },
+                plotOptions: {
+                    area: {
+                        fillOpacity: 0.5
+                    }
+                },
+                credits: {
+                    enabled: false
+                },
+                series: [
+                    {
+                        name: 'wait...',
+                        data: []
+                    }
+                ]
+            });
     </script>
     </p>
   </body>

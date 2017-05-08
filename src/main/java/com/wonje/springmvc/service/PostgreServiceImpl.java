@@ -1,6 +1,5 @@
 package com.wonje.springmvc.service;
 
-import com.datastax.driver.core.ResultSet;
 import com.wonje.springmvc.model.DeviceInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -8,7 +7,6 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -33,7 +31,8 @@ public class PostgreServiceImpl implements DeviceInfoService{
         // Calculate Watts and Store for each of totem devices
         Map lookUpTotems    = new HashMap<String, Integer>();
         List avgDeviceInfo  = new ArrayList<ArrayList<Double>>();
-        Date currentTime    = new Date();
+        Timestamp currentTime = new Timestamp(Calendar.getInstance().getTime().getTime());
+
         for(DeviceInfo deviceInfo : deviceInfos){
             // Make Lookup table
             if(!lookUpTotems.containsKey(deviceInfo.getTotemDevice())) {
@@ -52,7 +51,7 @@ public class PostgreServiceImpl implements DeviceInfoService{
             for(Object watts : selectedDevice)
                 tempWatt += (Double)watts;
             // Query to PostgreSQL DB
-            jdbcTemplate.update("INSERT INTO deviceInfo(totemDevice, timeStamp, watts ) VALUES (?, ?, ?,)",
+            jdbcTemplate.update("INSERT INTO deviceInfo(totemDevice, timeStamp, watts) VALUES (?, ?, ?)",
                     new Object[]{(String) totem, currentTime, tempWatt / selectedDevice.size()});
         }
     }
@@ -65,10 +64,6 @@ public class PostgreServiceImpl implements DeviceInfoService{
         jdbcTemplate.update("INSERT INTO deviceInfo(totemDevice, timeStamp, watts ) VALUES (?, ?, ?)", new Object[]{deviceInfo.getTotemDevice(),
         timeStampForPostgre, deviceInfo.getAmp() * deviceInfo.getVolt()});
 
-
-//        jdbcTemplate.update("INSERT INTO deviceInfo(totemDevice, timeStamp, datePartition, date, amp, volt) VALUES (?, ?, ?, ?, ?, ?)",
-//                new Object[]{deviceInfo.getTotemDevice(), timeStampForPostgre, datePartition,
-//                        deviceInfo.getDate(), deviceInfo.getAmp(), deviceInfo.getVolt()});
     }
 
     @Override
@@ -77,11 +72,12 @@ public class PostgreServiceImpl implements DeviceInfoService{
             @Override
             public DeviceInfo mapRow(java.sql.ResultSet rs, int rowNum) throws SQLException {
                 DeviceInfo deviceInfo = new DeviceInfo(rs.getString("totemdevice"), rs.getTimestamp("timestamp").getTime(),
-                        rs.getString("date"), rs.getDouble("amp"), rs.getDouble("volt"));
+                        "", rs.getDouble("watts"), 1.0);
                 return deviceInfo;
             }
         };
-        return jdbcTemplate.query("SELECT * FROM deviceInfo WHERE timestamp >= ? AND timestamp <= ?;",
-                new Object[]{new Timestamp(startTime), new Timestamp(endTime)}, mapper);
+
+        return jdbcTemplate.query("SELECT * FROM deviceInfo WHERE timestamp >= ? AND timestamp <= ? ORDER BY timestamp ASC",
+                new Object[] {new Timestamp(startTime), new Timestamp(endTime)}, mapper);
     }
 }
