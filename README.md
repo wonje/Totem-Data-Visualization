@@ -52,6 +52,12 @@ CREATE TABLE deviceInfo (
 - The path is "\TotemSpringMVC4\src\test\resources"
 - You must put the data set before running this project. I did not upload this.
 
+```
+micrototem1,0-grid,2016-03-01,1474881547339,8.22222,9.0848
+
+The format is "TotemDevice, [IGNORE VALUE], Date, Timestamp (UTC), Amp, Volt"
+```
+
 ## Step 2 : Run TotemSpringMVC4.
 
 1. You may use Intellij IDE to run this project.
