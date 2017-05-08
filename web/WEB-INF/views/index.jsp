@@ -79,11 +79,13 @@
                 });
             };
             $(document).ready(ajaxCall(0,new Date().getTime()));
+
+
       </script>
     <title>Display Current Data</title>
   </head>
   <body>
-  <div class="bgimg w3-display-container w3-animate-opacity w3-text-white">
+  <div class="bgimg w3-display-container w3-animate-opacity w3-text-grey">
       <div class="w3-display-topleft w3-padding-large w3-xlarge">
           <img src="//static1.squarespace.com/static/56104a4ee4b0ffa1f98ffcfc/t/5612fc32e4b0d85879e4f1ad/1492952904688/?format=1500w" height="60" width="200">
       </div>
@@ -92,13 +94,11 @@
           <hr class="w3-border-grey" style="margin:auto;width:70%">
               <p class="w3-xxlarge w3-center">Choose Date within 7days</p>
           <div class="w3-large w3-center">
-          <input type="text" name="daterange" style="width : 300px; text-decoration-color: black;" value="" />
+          <input type="text" name="daterange" style="width : 300px;" value="" />
           </div>
           <P></P>
           <hr class="w3-border-grey" style="margin:auto;width:70%">
-
               <p class="w3-xxlarge w3-center">Plot All Data Set</p>
-          <br><br>
           <h2 class="w3-large w3-center" id="devices"></h2>
       <div class="w3-large w3-center" id="container" style="height: 600px; margin: 0 auto"></div>
   </div>
@@ -118,8 +118,8 @@
                         "days": 7
                     },
                     "showCustomRangeLabel": false,
-                    "startDate": "05/07/2017",
-                    "endDate": "05/13/2017"
+                    "startDate": "",
+                    "endDate": "05/08/2017"
                 });
                 $('input[name="daterange"]').on('apply.daterangepicker', function(ev, picker) {
                     startDate = picker.startDate;
@@ -143,7 +143,7 @@
                 zoomType: 'x'
             },
             title: {
-                text: 'Totem Power'
+                text: 'Totem Power : Watts over time'
             },
             subtitle: {
                 text: 'Time',

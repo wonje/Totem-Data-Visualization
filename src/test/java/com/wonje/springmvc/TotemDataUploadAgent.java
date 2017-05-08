@@ -21,8 +21,8 @@ public class TotemDataUploadAgent {
 
         // TODO Post Each row of data
         System.out.println("Data Processing...");
-//        while(dataProcessor.postData());
-        for(int i = 0; i < 5000; i++)
+        while(dataProcessor.postData());
+//        for(int i = 0; i < 100000; i++)
             dataProcessor.postData();
         System.out.println("Data Processing is done.");
     }

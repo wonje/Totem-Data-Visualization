@@ -84,7 +84,13 @@ public class TotemController {
                                        @RequestParam(value = "endTime") long endTime){
         // TODO INSERT DB collected last 5 minutes
 //        postgreServiceImpl.saveAverageInfo(deviceInfoService.findAllDeviceInfos(startTime, endTime));
-        postgreServiceImpl.saveAverageInfo(cassandraService.findAllDeviceInfos(startTime, endTime));
+
+        // CHOICE 1 : INPUT FROM CASSANDRA
+//        postgreServiceImpl.saveAverageInfo(cassandraService.findAllDeviceInfos(startTime, endTime));
+
+        // TODO CHOICE 2 : INPUT DB DIRECTLY ON THE INDEX.JSP
+
+
 
         return "index";
     }

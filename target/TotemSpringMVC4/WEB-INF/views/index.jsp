@@ -79,55 +79,34 @@
                 });
             };
             $(document).ready(ajaxCall(0,new Date().getTime()));
+
+
       </script>
     <title>Display Current Data</title>
   </head>
   <body>
-  <div class="bgimg w3-display-container w3-animate-opacity w3-text-white">
+  <div class="bgimg w3-display-container w3-animate-opacity w3-text-grey">
       <div class="w3-display-topleft w3-padding-large w3-xlarge">
           <img src="//static1.squarespace.com/static/56104a4ee4b0ffa1f98ffcfc/t/5612fc32e4b0d85879e4f1ad/1492952904688/?format=1500w" height="60" width="200">
       </div>
       <div class="w3-display-containers">
-          <%--<div class="w3-display-middle">--%>
           <h1 class="w3-jumbo w3-animate-top w3-center">Totem Internship Assignment</h1>
           <hr class="w3-border-grey" style="margin:auto;width:70%">
-
               <p class="w3-xxlarge w3-center">Choose Date within 7days</p>
-          <%--<input class="w3-large w3-center" type="text" name="daterange" value="" />--%>
           <div class="w3-large w3-center">
-          <input type="text" name="daterange" style="width : 300px; text-decoration-color: black;" value="" />
+          <input type="text" name="daterange" style="width : 300px;" value="" />
           </div>
           <P></P>
           <hr class="w3-border-grey" style="margin:auto;width:70%">
-
               <p class="w3-xxlarge w3-center">Plot All Data Set</p>
-          <br><br>
           <h2 class="w3-large w3-center" id="devices"></h2>
-          <%--<div class="w3-large w3-center" id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>--%>
-          <%--<div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>--%>
-      <%--</div>--%>
-      <%--<div class="w3-large w3-center" id="container" style="min-width: 310px; max-width : height: 600px; margin: 0 auto"></div>--%>
       <div class="w3-large w3-center" id="container" style="height: 600px; margin: 0 auto"></div>
-      <%--<div class="w3-large w3-center" id="container" style="max-width: 1000px; height: 600px; margin: 0 auto"></div>--%>
   </div>
       <div class="w3-display-bottomleft w3-padding-large">
           <b>Wonje Kang</b>
       </div>
   </div>
 
-
-
-
-    <%--<h1>Totem Internship Assignment</h1><br>--%>
-    <%--<h2>Choose Date</h2>--%>
-    <%--<div id="daterange"></div><br>--%>
-    <%--<input type="text" name="daterange" value="" />--%>
-    <%--<h2>Display All data set</h2><br>--%>
-  <%--<p id="device">--%>
-      <%--<h2 id="devices"></h2>--%>
-    <%--<h2 id="test"></h2>--%>
-
-    <%--<div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>--%>
     <script>
             var startDate;
             var endDate;
@@ -139,7 +118,7 @@
                         "days": 7
                     },
                     "showCustomRangeLabel": false,
-                    "startDate": "05/07/2017",
+                    "startDate": "",
                     "endDate": "05/13/2017"
                 });
                 $('input[name="daterange"]').on('apply.daterangepicker', function(ev, picker) {
@@ -164,7 +143,7 @@
                 zoomType: 'x'
             },
             title: {
-                text: 'Totem Power'
+                text: 'Totem Power : Watts over time'
             },
             subtitle: {
                 text: 'Time',
@@ -191,11 +170,6 @@
                     text: 'Watts'
                 },
 //
-//                labels: {
-//                    formatter: function () {
-//                        return this.value;
-//                    }
-//                }
             },
             tooltip: {
                 formatter: function () {

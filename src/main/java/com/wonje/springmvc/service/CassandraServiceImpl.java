@@ -21,10 +21,13 @@ public class CassandraServiceImpl implements DeviceInfoService {
     private static Cluster cluster;
     private static Session session;
     private static PreparedStatement statement;
+    private static PreparedStatement tempStatement;
     private static BoundStatement boundStatement;
+    private static BoundStatement tempBoundStatement;
 
     public static final String keyspace = "totem";
     public static final String table    = "deviceInfo";
+    public static final String tempTable    = "tempInfo";
 
     private static Cluster connect(String node) {
         return Cluster.builder().addContactPoint(node).build();
@@ -51,11 +54,25 @@ public class CassandraServiceImpl implements DeviceInfoService {
                 "    volt double, " +
                 "    PRIMARY KEY (datePartition, timeStamp)" +
                 ");");
+        // CREATE TABLE FOR TEMPORARY DURING 5 MINUTES
+        session.execute("CREATE TABLE IF NOT EXISTS "+ keyspace +".tempInfo ( " +
+                "    totemDevice text, " +
+                "    timeStamp timestamp, " +
+                "    datePartition text, " +
+                "    date text, " +
+                "    amp double, " +
+                "    volt double, " +
+                "    PRIMARY KEY (datePartition, timeStamp)" +
+                ");");
 
         statement = session.prepare(
                 "INSERT INTO "+ keyspace + "." + table + " (totemDevice, timeStamp, datePartition, date, amp, volt)"
-                        + "VALUES (?,?,?,?,?,?);");
+                        + "VALUES (?,?,?,?,?,?) IF NOT EXISTS;");
+        tempStatement = session.prepare(
+                "INSERT INTO "+ keyspace + "." + tempTable + " (totemDevice, timeStamp, datePartition, date, amp, volt)"
+                        + "VALUES (?,?,?,?,?,?) IF NOT EXISTS;");
         boundStatement = new BoundStatement(statement);
+        tempBoundStatement = new BoundStatement(tempStatement);
     }
 
     // Return matched specific deviceinfo
@@ -67,8 +84,13 @@ public class CassandraServiceImpl implements DeviceInfoService {
     @Override
     public void saveDeviceInfo(DeviceInfo deviceInfo) {
         String datePartition = new SimpleDateFormat("yyyy-MM-dd").format(new Date(deviceInfo.getTimeStamp()));
+        // INSERT INTO deviceInfo TABLE
         session.execute(boundStatement.bind(deviceInfo.getTotemDevice(), deviceInfo.getTimeStamp(), datePartition,
                 deviceInfo.getDate(), deviceInfo.getAmp(), deviceInfo.getVolt()));
+        // INSERT INTO tempInfo TABLE
+        session.execute(tempBoundStatement.bind(deviceInfo.getTotemDevice(), deviceInfo.getTimeStamp(), datePartition,
+                deviceInfo.getDate(), deviceInfo.getAmp(), deviceInfo.getVolt()));
+
         System.out.println(deviceInfo);
     }
 
