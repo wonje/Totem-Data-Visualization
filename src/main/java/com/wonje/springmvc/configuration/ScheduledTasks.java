@@ -21,7 +21,7 @@ public class ScheduledTasks {
     @Qualifier("postgreService")
     PostgreServiceImpl postgreServiceImpl;
 
-    @Scheduled(cron = "0 0/1 * * * *")
+    @Scheduled(cron = "0 0/5 * * * *")
     public void reportFiveMinute() {
         if(SchedulingState.currentState.equals(SchedulingState.FIVE_MIN)){
             // tempInfo (Cassandra) --> getAverage() --> PostgreSQL
