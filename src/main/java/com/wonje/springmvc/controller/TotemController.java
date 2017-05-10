@@ -3,7 +3,6 @@ package com.wonje.springmvc.controller;
 import com.wonje.springmvc.model.DeviceInfo;
 import com.wonje.springmvc.model.SchedulingState;
 import com.wonje.springmvc.service.CassandraServiceImpl;
-import com.wonje.springmvc.service.DeviceInfoServiceImpl;
 import com.wonje.springmvc.service.PostgreServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -21,10 +20,6 @@ import java.util.List;
  */
 @Controller
 public class TotemController {
-
-    @Autowired
-    @Qualifier("deviceInfoService")
-    DeviceInfoServiceImpl deviceInfoService;
     @Autowired
     @Qualifier("cassandraService")
     CassandraServiceImpl cassandraService;
